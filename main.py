@@ -2,13 +2,15 @@ import assemblyai as aai
 import youtube_dl
 from youtube_transcript_api import YouTubeTranscriptApi
 import os
-script_directory = os.path.dirname(os.path.realpath(__file__))
+
+script_directory = os.getcwd()
 os.chdir(script_directory)
+
 def url_process(video_url):
     video_id = video_url.split("v=")[1]
     try:
         list_transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['pt', 'en'])
-        with open("transcript" + video_id + ".txt", "a+", encoding="utf-8") as file:
+        with open(os.path.join(script_directory, "transcript" + video_id + ".txt"), "a+", encoding="utf-8") as file:
             for transcript in list_transcript:
                 file.write(transcript["text"] + "\n")
         print("Transcrição concluída. Arquivo txt salvo.")
@@ -47,7 +49,8 @@ def file_process(fileName):
     transcriber = aai.Transcriber()
     config = aai.TranscriptionConfig(speaker_labels=True)
     transcript = transcriber.transcribe(fileName, config)
-    with open("transcript" + fileName.strip().replace(" ", "").replace(".mp3", "") + ".txt", "a+", encoding="utf-8") as file:
+    with open(os.path.join(script_directory, "transcript" + fileName.strip().replace(" ", "").replace(".mp3", "") +
+         ".txt"), "a+", encoding="utf-8") as file:
         for paragraph in transcript.get_paragraphs():
             file.write(paragraph.text + "\n")
     print("Transcrição concluída. Arquivo txt salvo.")
