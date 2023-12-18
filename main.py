@@ -7,7 +7,11 @@ script_directory = os.getcwd()
 os.chdir(script_directory)
 
 def url_process(video_url):
-    video_id = video_url.split("v=")[1]
+    try:
+        video_id = video_url.split("v=")[1]
+    except:
+        print("URL incorreta.")
+        main()
     try:
         list_transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['pt', 'en'])
         with open(os.path.join(script_directory, "transcript" + video_id + ".txt"), "a+", encoding="utf-8") as file:
@@ -30,17 +34,21 @@ def url_process(video_url):
 
 
 def file_download(video_url):
-    video_info = youtube_dl.YoutubeDL().extract_info(
-        url=video_url, download=False
-    )
-    fileName = f"{video_info['title']}.mp3"
-    options = {
-        'format': 'bestaudio/best',
-        'keepvideo': False,
-        'outtmpl': fileName,
-    }
-    with youtube_dl.YoutubeDL(options) as ydl:
-        ydl.download([video_info['webpage_url']])
+    try:
+        video_info = youtube_dl.YoutubeDL().extract_info(
+            url=video_url, download=False
+        )
+        fileName = f"{video_info['title']}.mp3"
+        options = {
+            'format': 'bestaudio/best',
+            'keepvideo': False,
+            'outtmpl': fileName,
+        }
+        with youtube_dl.YoutubeDL(options) as ydl:
+            ydl.download([video_info['webpage_url']])
+    except:
+        print("Algo deu errado. Tente novamente.")
+        main()
 
     return fileName
 
