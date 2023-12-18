@@ -1,5 +1,5 @@
 import assemblyai as aai
-import youtube_dl
+import yt_dlp as youtube_dl
 from youtube_transcript_api import YouTubeTranscriptApi
 import os
 
